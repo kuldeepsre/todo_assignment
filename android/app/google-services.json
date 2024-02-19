@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1043923569485",
+    "project_id": "task-management-d32ec",
+    "storage_bucket": "task-management-d32ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1043923569485:android:cfa153d6f40b6dd9684504",
+        "android_client_info": {
+          "package_name": "com.example.task_todo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvLtndIexJaqsSUZfwmIoYJwiei2TgP8E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

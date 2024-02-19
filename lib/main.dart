@@ -1,34 +1,32 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/adapters.dart';
-import 'package:provider/provider.dart';
-import 'package:task_todo/task.dart';
-import 'package:task_todo/widget/home_page.dart';
+import 'views/home.dart';
+import 'package:flutter/services.dart';
 
-import 'TaskListViewModel.dart';
+Future main() async {
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    ),
+  );
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
-Future<void> main() async {
-  await Hive.initFlutter();
-  Hive.registerAdapter(TaskAdapter()); // Register the adapter
-  await Hive.openBox<Task>('tasks');
-  runApp( MyApp());
+  runApp(const ToDoApp());
 }
 
-class MyApp extends StatelessWidget {
+class ToDoApp extends StatelessWidget {
+  const ToDoApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    TaskListViewModel taskListViewModel = TaskListViewModel();
-    taskListViewModel.listenForUpdates(); // Start listening for real-time updates
-    return ChangeNotifierProvider(
-      create: (context) => taskListViewModel,
-      child: MaterialApp(
-        title: 'Task Assignment',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        debugShowCheckedModeBanner: false,
-        home: Dashboard(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.brown,
       ),
+      home: const HomeScreen(),
     );
   }
 }
