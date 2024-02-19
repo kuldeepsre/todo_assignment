@@ -1,58 +1,69 @@
-// firebase_service.dart
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:task_todo/mvvm/task_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FirebaseService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  User? get currentUser => _auth.currentUser;
-
-  Stream<User?> get authStateChanges => _auth.authStateChanges();
-
-  Future<void> signInAnonymously() async {
-    await _auth.signInAnonymously();
-  }
-
-  Future<void> signOut() async {
-    await _auth.signOut();
-  }
-
-  CollectionReference get tasksCollection => _firestore.collection('tasks');
-
-  Stream<List<Task>> getTasksStream() {
-    return tasksCollection
-        .where('owner', isEqualTo: currentUser?.uid)
+  Stream<List<Task>> getTasksStream(String ownerId) {
+    return _firestore
+        .collection('tasks')
+        .where('ownerId', isEqualTo: ownerId)
         .snapshots()
-        .map((querySnapshot) {
-      return querySnapshot.docs.map((doc) {
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
         return Task(
           id: doc.id,
-          name: doc['name'],
-          owner: doc['owner'],
-          sharedWith: List<String>.from(doc['sharedWith']),
+          title: doc['title'],
+          completed: doc['completed'],
+          ownerId: doc['ownerId'],
+          lastUpdated: (doc['lastUpdated'] as Timestamp?)?.toDate() ?? DateTime.now(),
+
         );
       }).toList();
     });
   }
 
-  Future<void> updateTaskName(String taskId, String newName) async {
-    await tasksCollection.doc(taskId).update({'name': newName});
+  Future<void> addTask(Task task) async {
+    await _firestore.collection('tasks').add({
+      'title': task.title,
+      'completed': task.completed,
+      'ownerId': task.ownerId,
+      'lastUpdated': FieldValue.serverTimestamp(),
+    });
   }
 
-  Future<void> shareTask(String userEmail, String taskId) async {
-    QuerySnapshot querySnapshot =
-    await _firestore.collection('users').where('email', isEqualTo: userEmail).get();
+  Future<void> updateTask(Task task) async {
+    await _firestore.collection('tasks').doc(task.id).update({
+      'title': task.title,
+      'completed': task.completed,
+      'lastUpdated': FieldValue.serverTimestamp(),
+    });
+  }
 
-    if (querySnapshot.docs.isNotEmpty) {
-      String sharedUserId = querySnapshot.docs.first.id;
+  Future<void> deleteTask(String taskId) async {
+    await _firestore.collection('tasks').doc(taskId).delete();
+  }
 
-      await tasksCollection.doc(taskId).update({
-        'sharedWith': FieldValue.arrayUnion([sharedUserId]),
-      });
+  Future<void> shareTaskViaEmail(Task task) async {
+    final String taskDetails = "Task: ${task.title}\nStatus: ${task.completed ? 'Completed' : 'Pending'}";
+
+    // Use the url_launcher package to launch the email client
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: '', // Empty path opens the default email client
+      queryParameters: {
+        'subject': 'Task Details',
+        'body': taskDetails,
+      },
+    );
+
+    // Launch the email client
+    if (await canLaunch(emailLaunchUri.toString())) {
+      await launch(emailLaunchUri.toString());
+    } else {
+      // Handle the exception if the URL can't be launched
+      print('Could not launch email');
     }
   }
-
 }

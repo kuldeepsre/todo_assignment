@@ -68,7 +68,7 @@ class _DeleteTaskDialogState extends State<DeleteTaskDialog> {
   Future _deleteTasks() async {
     var collection = FirebaseFirestore.instance.collection('tasks');
     collection
-        .doc(widget.taskId)
+        .doc(widget.taskId??"defaultUserId")
         .delete()
         .then(
           (_) => Fluttertoast.showToast(

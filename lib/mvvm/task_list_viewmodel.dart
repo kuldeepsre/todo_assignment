@@ -1,30 +1,36 @@
-// task_list_viewmodel.dart
-
 import 'package:flutter/material.dart';
 import 'package:task_todo/mvvm/services.dart';
-import 'task_model.dart';
+import 'package:task_todo/mvvm/task_model.dart';
 
-class TaskListViewModel with ChangeNotifier {
+
+class TaskViewModel extends ChangeNotifier {
   final FirebaseService _firebaseService = FirebaseService();
+  List<Task> _tasks = [];
 
-  Stream<List<Task>> getTasksStream() {
-    return _firebaseService.getTasksStream();
-  }
+  List<Task> get tasks => _tasks;
 
-  Future<void> updateTaskName(String taskId, String newName) async {
-    await _firebaseService.updateTaskName(taskId, newName);
-  }
-
-  Future<void> shareTask(String userEmail, String taskId) async {
-    await _firebaseService.shareTask(userEmail, taskId);
-  }
-  Future<void> createTask(String taskName) async {
-    String ownerId = _firebaseService.currentUser?.uid ?? 'unknown';
-
-    await _firebaseService.tasksCollection.add({
-      'name': taskName,
-      'owner': ownerId,
-      'sharedWith': <String>[],
+  TaskViewModel(String ownerId) {
+    _firebaseService.getTasksStream(ownerId).listen((tasks) {
+      _tasks = tasks;
+      notifyListeners();
     });
+  }
+
+  void addTask(Task task) {
+    _firebaseService.addTask(Task(
+      id: task.id,
+      title: task.title,
+      completed: task.completed,
+      ownerId: task.ownerId,
+      lastUpdated: DateTime.now(),
+    ));
+  }
+
+  void updateTask(Task task) {
+    _firebaseService.updateTask(task);
+  }
+
+  void deleteTask(String taskId) {
+    _firebaseService.deleteTask(taskId);
   }
 }

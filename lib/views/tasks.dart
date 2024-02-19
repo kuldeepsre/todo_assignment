@@ -61,8 +61,8 @@ class _TasksState extends State<Tasks> {
                         backgroundColor: taskColor,
                       ),
                     ),
-                    title: Text(data['taskName']),
-                    subtitle: Text(data['taskDesc']),
+                    title: Text(data['taskName']??""),
+                    subtitle: Text(data['taskDesc']??""),
                     isThreeLine: true,
                     trailing: PopupMenuButton(
                       itemBuilder: (context) {
@@ -74,10 +74,10 @@ class _TasksState extends State<Tasks> {
                               style: TextStyle(fontSize: 13.0),
                             ),
                             onTap: () {
-                              String taskId = (data['id']);
-                              String taskName = (data['taskName']);
-                              String taskDesc = (data['taskDesc']);
-                              String taskTag = (data['taskTag']);
+                              String taskId = (data['id']??"");
+                              String taskName = (data['taskName']??"");
+                              String taskDesc = (data['taskDesc']??"");
+                              String taskTag = (data['taskTag']??"");
                               Future.delayed(
                                 const Duration(seconds: 0),
                                 () => showDialog(
@@ -94,8 +94,8 @@ class _TasksState extends State<Tasks> {
                               style: TextStyle(fontSize: 13.0),
                             ),
                             onTap: (){
-                              String taskId = (data['id']);
-                              String taskName = (data['taskName']);
+                              String taskId = (data['id']??"");
+                              String taskName = (data['taskName']??"");
                               Future.delayed(
                                 const Duration(seconds: 0),
                                     () => showDialog(

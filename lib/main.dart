@@ -1,5 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'mvvm/pages/view_list.dart';
+import 'mvvm/task_list_viewmodel.dart';
 import 'views/home.dart';
 import 'package:flutter/services.dart';
 
@@ -21,12 +24,20 @@ class ToDoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.brown,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => TaskViewModel('ownerUserId')),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.brown,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+
+//  home: const HomeScreen(),
+        home:  TaskViewList(),
       ),
-      home: const HomeScreen(),
     );
   }
 }
