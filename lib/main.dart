@@ -1,6 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'mvvm/auth_view_model.dart';
+import 'mvvm/pages/login_page.dart';
+import 'mvvm/pages/profile_scrren.dart';
+import 'mvvm/pages/signup.dart';
 import 'mvvm/pages/view_list.dart';
 import 'mvvm/task_list_viewmodel.dart';
 import 'views/home.dart';
@@ -27,17 +31,20 @@ class ToDoApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => TaskViewModel('ownerUserId')),
+        ChangeNotifierProvider(create: (context) => AuthViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.brown,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => SignIn(),
+          '/signup': (context) => SignUpScreen(),
+          '/home': (context) => ProfileScreen(),
+          '/dashboard': (context) => TaskViewList(),
 
-//  home: const HomeScreen(),
-        home:  TaskViewList(),
-      ),
+        },
+      )
+
     );
   }
 }

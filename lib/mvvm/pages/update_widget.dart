@@ -26,16 +26,16 @@ class _TaskEditDialogState extends State<TaskEditDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Edit Task'),
+      title: const Text('Edit Task'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
             controller: _titleController,
-            decoration: InputDecoration(labelText: 'Task Title'),
+            decoration: const InputDecoration(labelText: 'Task Title'),
           ),
           CheckboxListTile(
-            title: Text('Completed'),
+            title: const Text('Completed'),
             value: _completed,
             onChanged: (value) {
               setState(() {
@@ -50,7 +50,7 @@ class _TaskEditDialogState extends State<TaskEditDialog> {
           onPressed: () {
             Navigator.of(context).pop(); // Close the dialog
           },
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
         ),
         TextButton(
           onPressed: () {
@@ -68,7 +68,7 @@ class _TaskEditDialogState extends State<TaskEditDialog> {
 
             Navigator.of(context).pop(); // Close the dialog
           },
-          child: Text('Save'),
+          child: const Text('Save'),
         ),
       ],
     );
